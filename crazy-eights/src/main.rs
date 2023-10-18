@@ -12,7 +12,7 @@ fn main() {
 }
 
 fn initialize_deck(mut deck: Vec<Card>) -> Vec<Card> {
-    for i in 1..52 {
+    for i in 1..53 {
         deck.push(Card {
             number: if i % 13 != 0 { i % 13 } else { 13 },
             suit: if i / 13 < 1 {
