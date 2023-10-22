@@ -1,5 +1,6 @@
 use rand::Rng;
 
+#[derive(Clone)]
 struct Card {
     suit: String,
     number: i32,
@@ -10,6 +11,7 @@ fn main() {
     initialize_deck(&mut deck);
     println!("\nListing cards: ");
     print_deck(&deck);
+
     for _i in 0..4 {
         shuffle(&mut deck);
     }
@@ -41,31 +43,25 @@ fn print_deck(deck: &Vec<Card>) {
 }
 
 fn shuffle(deck: &mut Vec<Card>) {
-    // shuffle cards
-    // cut the deck, rearrange the halves
-    // generate a random number and if even, add one half back, if odd add the other
-    // repeat like 4 times
-
-    let mut bottom_half = deck.split_off(deck.len() / 2);
-    print!("size of bottom half: {}, size of top half: {}\n",bottom_half.len(),deck.len());
+    let mut deck_clone = deck.clone();
+    let mut bottom_half = deck_clone.split_off(deck_clone.len() / 2);
+    let mut top_half = deck_clone;
     let mut shuffled_deck: Vec<Card> = vec![];
-    while !bottom_half.is_empty() && !deck.is_empty() {
+
+    while !bottom_half.is_empty() || !top_half.is_empty() {
         let random_number = rand::thread_rng().gen::<i32>();
-        if random_number % 2 == 0 {
-            // match bottom_half.pop() {
-            //     Some(card) => shuffled_deck.push(card),
-            //     None => 
-            // }
-            shuffled_deck.push(bottom_half.pop().unwrap());
-        } else {
-            // match deck.pop() {
-            //     Some(card) => shuffled_deck.push(card),
-            //     None => ,
-            // }
-            shuffled_deck.push(deck.pop().unwrap());
+
+        if random_number % 2 == 0 && !bottom_half.is_empty() {
+
+            if let Some(card) = bottom_half.pop() {
+                shuffled_deck.push(card);
+            }
+        } else if !top_half.is_empty() {
+            
+            if let Some(card) = top_half.pop() {
+                shuffled_deck.push(card);
+            }
         }
     }
-    println!("Shuffled deck size: {}, top half size: {}, bottom half size: {}",shuffled_deck.len(),deck.len(),bottom_half.len());
     *deck = shuffled_deck;
-    println!("Final deck size: {}",deck.len());
 }
