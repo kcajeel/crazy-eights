@@ -63,6 +63,11 @@ This program will simulate the Crazy Eights card game with all of the gameplay e
 
 ## Program Design
 
+The program will be seaprated into various modules to divide the game into discrete parts. This should make development and maintennance easier, and the game should be more loosely coupled as a result. The first modules to be defined are the card deck, the player entities, and the game itself. The main function will be used to launch the game and associated components.
+Functions shall be designed to do one thing such that complex tasks are broken down into processes. Functions will aim to be relatively short (< 50 lines) to assist in this goal.
+Named things shall be named according to their purpose, and units shall be appended to variable names where applicable. The goal of this is to create clear, readable code.
+The program is designed to be self-documenting, i.e readable. This documentation exists to assist the developers in defining the program's design and to communicate the intended design to readers and potential contributors.
+
 ### High Level Design
 
 ### Low Level Design
