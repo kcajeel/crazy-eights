@@ -2,19 +2,17 @@
 
 Contents:
 
-Setup
+[Setup](#setup)
 
-Gameplay
+[Gameplay](#gameplay)
 
-Program Structure
+[Program Design](#program-design)
 
-High Level Design
+[High Level Design](#high-level-design)
 
-Low Level Design
+[Future Plans](#future-plans)
 
-Future Plans
-
-References
+[References](#references)
 
 ---
 
@@ -70,12 +68,41 @@ The program is designed to be self-documenting, i.e readable. This documentation
 
 ### High Level Design
 
-### Low Level Design
+This section goes over each file in the program and lists their contents. 
 
+### main.rs
+-   The entrypoint for the program, the code in this file is light and relies on the underlying modules. 
+-   `fn main()`: main function, used to call `game::run_game()`
+
+### deck.rs
+-  Contains the functions and data structures necessary to construct a deck of cards. 
+- `struct Card`: contains the information used in a playing card
+- `fn initialize(&mut Vec<Card>)`: initializes a standard 52-card deck with the Card struct
+- `fn print(&Vec<Card>)`: prints the cards in the deck
+- `fn shuffle(&mut Vec<Card>)`: shuffles the deck inplace
+
+### game.rs
+- Contains the functions necessary to run the game logic
+- `struct Game`: a data structure that holds a list of the players, a list representing the deck, a list representing the discard pile.
+- `fn initialize(i32)`: initializes the game state with the number of players
+- `fn deal_cards(&mut Vec<Player>)`: assigns a portion of the deck to each player in the list of players
+- `fn run_game(&mut Game)`: calls the functions necessary to start the game
+- `fn next_turn(&mut self)`: hands the turn off to the next player
+- `fn discard_card(&mut self, Card)`: adds the given card to the discard pile
+
+### player.rs
+- Contains the data structures and functions for players to perform game actions
+- `struct Player`: a representation of the player with a name and a `hand` field representing the cards in the player's hand
+- `fn draw_card(&mut Vec<Card>)`: adds a card to the player's hand
+- `fn play_card(&mut Vec<Card>)`: removes a given card from the player's hand
+- `fn play_crazy_eight(&mut Vec<Card>, str)`: removes an eight from the player's hand and specifies the desired suit to change to
 ---
 
 ## Future Plans
 
+- A gui may be added once the game functions (defined above) are writen
+- Once that is done, networking may be added to enable multiplayer features
+- After that, this game will be re-written in C++ and then Java. It will be good experience to learn the differences between the languages, and it would be interesting to benchmark the performance of each program.
 ---
 
 ## References
