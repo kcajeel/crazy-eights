@@ -107,8 +107,8 @@ This section goes over each file in the program and lists their contents.
 
 ## References
 
-[Wikipedia](https://en.wikipedia.org/wiki/Crazy_Eights "Wikipedia")
-[Markdown Guide](https://www.markdownguide.org/extended-syntax/ "Markdown Guide")
+- [Wikipedia](https://en.wikipedia.org/wiki/Crazy_Eights "Wikipedia")
+- [Markdown Guide](https://www.markdownguide.org/extended-syntax/ "Markdown Guide")
 
 ---
 
