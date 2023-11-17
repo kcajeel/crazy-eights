@@ -70,18 +70,18 @@ The program is designed to be self-documenting, i.e readable. This documentation
 
 This section goes over each file in the program and lists their contents. 
 
-### main.rs
+#### main.rs
 -   The entrypoint for the program, the code in this file is light and relies on the underlying modules. 
 -   `fn main()`: main function, used to call `game::run_game()`
 
-### deck.rs
+#### deck.rs
 -  Contains the functions and data structures necessary to construct a deck of cards. 
 - `struct Card`: contains the information used in a playing card
 - `fn initialize(&mut Vec<Card>)`: initializes a standard 52-card deck with the Card struct
 - `fn print(&Vec<Card>)`: prints the cards in the deck
 - `fn shuffle(&mut Vec<Card>)`: shuffles the deck inplace
 
-### game.rs
+#### game.rs
 - Contains the functions necessary to run the game logic
 - `struct Game`: a data structure that holds a list of the players, a list representing the deck, a list representing the discard pile.
 - `fn initialize(i32)`: initializes the game state with the number of players
@@ -90,12 +90,22 @@ This section goes over each file in the program and lists their contents.
 - `fn next_turn(&mut self)`: hands the turn off to the next player
 - `fn discard_card(&mut self, Card)`: adds the given card to the discard pile
 
-### player.rs
+#### player.rs
 - Contains the data structures and functions for players to perform game actions
 - `struct Player`: a representation of the player with a name and a `hand` field representing the cards in the player's hand
 - `fn draw_card(&mut Vec<Card>)`: adds a card to the player's hand
 - `fn play_card(&mut Vec<Card>)`: removes a given card from the player's hand
-- `fn play_crazy_eight(&mut Vec<Card>, str)`: removes an eight from the player's hand and specifies the desired suit to change to
+- `fn play_crazy_eight(&mut Vec<Card>, str)`: removes an eight from the player's hand and specifies the desired suit
+
+### Low Level Design
+
+This section details each function, struct, and method contained within each module. It emphasizes implementation details such as the inner workings of functions and how modules and functions will relate to one another. 
+
+#### main.rs
+- `fn main(number_of_players: i32)` will call `game::Game::new(number_of_players)` to create a Game struct with the appropriate number of players. It will then call `game::run_game()` with the struct it created. 
+
+#### game.rs
+- TODO
 ---
 
 ## Future Plans
