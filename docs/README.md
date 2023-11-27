@@ -83,12 +83,10 @@ This section goes over each file in the program and lists their contents.
 
 #### game.rs
 - Contains the functions necessary to run the game logic
-- `struct Game`: a data structure that holds a list of the players, a list representing the deck, a list representing the discard pile.
-- `fn initialize(i32)`: initializes the game state with the number of players
+- `enum Game`: an enum with two variants: Running and Over, to signify the game's state.
+- `fn initialize()`: initializes the game state by creating a Game struct with the appropriate number of players
 - `fn deal_cards(&mut Vec<Player>)`: assigns a portion of the deck to each player in the list of players
-- `fn run_game(&mut Game)`: calls the functions necessary to start the game
-- `fn next_turn(&mut self)`: hands the turn off to the next player
-- `fn discard_card(&mut self, Card)`: adds the given card to the discard pile
+- `fn play(&mut Game)`: calls each player's `take_turn` function in order until the game is won
 
 #### player.rs
 - Contains the data structures and functions for players to perform game actions
@@ -96,6 +94,7 @@ This section goes over each file in the program and lists their contents.
 - `fn draw_card(&mut Vec<Card>)`: adds a card to the player's hand
 - `fn play_card(&mut Vec<Card>)`: removes a given card from the player's hand
 - `fn play_crazy_eight(&mut Vec<Card>, str)`: removes an eight from the player's hand and specifies the desired suit
+- `fn take_turn(&mut Vec<Card>, &mut Vec<Card>)`: prompts the user associated with the player for input and allows them to draw or play a card from their hand
 
 ### Low Level Design
 
@@ -105,7 +104,19 @@ This section details each function, struct, and method contained within each mod
 - `fn main(number_of_players: i32)` will call `game::Game::new(number_of_players)` to create a Game struct with the appropriate number of players. It will then call `game::run_game()` with the struct it created. 
 
 #### game.rs
-- TODO
+- `enum Game` will contain the following variants:
+  - `Running`: contains the following fields: 
+    - `players: Vec<Player>`: contains a list of each player and their hand
+    - `play_deck: Vec<Card>`:  holds the cards in the play deck, to be dealt to each player and added to the discard pile.
+    - `discard_pile: Vec<Card>`: holds the cards in the discard pile
+  - `Over`: TODO: either contains no fields or contains the field of the winning player
+  Implementations for Game: 
+  - `fn new(number_of_players: i32) -> mut Self`: creates a new Game with the `players` field initialized to the `number_of_players` parameter
+  - `fn initialize() -> mut Game`: prompts the user for input and returns a Game struct with the appropriate number of players
+  - `fn deal_cards(players: &mut Vec<Player>, deck: &mut Vec<Card>)`: given the size of the `players` Vec, pops an appropriate ammount of cards (see [Setup](#setup)) from the `deck` into each player's hand in alternating order. This function modifies the `players` in-place without returning anything. The idea behind this decision is similar to [this post](https://softwareengineering.stackexchange.com/a/311120), where the function should do what its name says; if it doesn't *imply* returning a value, then it shouldn't return a value.
+  - `fn play(game: &mut Game)`: iterates through the `players` and calls `player::take_turn` on each player, passing the play deck and discard pile as parameters. 
+- 
+
 ---
 
 ## Future Plans
@@ -120,7 +131,7 @@ This section details each function, struct, and method contained within each mod
 - [Wikipedia](https://en.wikipedia.org/wiki/Crazy_Eights "Wikipedia")
 - [Markdown Guide](https://www.markdownguide.org/extended-syntax/ "Markdown Guide")
 
----
+
 
 [^1]: This range was chosen because the game cannot be played with less than two players, and the game would be confusing and time-consuming with more than ten players.
 
