@@ -76,8 +76,10 @@ This section goes over each file in the program and lists their contents.
 
 #### deck.rs
 -  Contains the functions and data structures necessary to construct a deck of cards. 
+- `enum Value`: contains all possible Card values
+- `enum Suit`: contains all possible Card suits
 - `struct Card`: contains the information used in a playing card
-- `fn initialize(&mut Vec<Card>)`: initializes a standard 52-card deck with the Card struct
+- `fn new(&mut Vec<Card>)`: creates a standard 52-card deck with the Card struct
 - `fn print(&Vec<Card>)`: prints the cards in the deck
 - `fn shuffle(&mut Vec<Card>)`: shuffles the deck inplace
 
@@ -103,6 +105,17 @@ This section details each function, struct, and method contained within each mod
 #### main.rs
 - `fn main(number_of_players: i32)` will call `game::Game::new(number_of_players)` to create a Game struct with the appropriate number of players. It will then call `game::run_game()` with the struct it created. 
 
+#### deck.rs
+- `enum Value`: will contain the variants for each value Name in the [Setup table](#setup)
+- `enum Suit`: will contain variants for each suit, namely `Hearts`, `Diamonds`, `Spades`, and `Clubs`.
+- `struct Card` will contain the following fields:
+  - `value: Value`: contains the value of the card
+  - `suit: Suit`: contains the suit of the card
+  Implementations for Card: 
+    - `new() -> Vec,Self>`: returns a Vec containing 52 Cards representing a standard card deck, henceforth referred to as a deck
+    - `shuffle(&mut Vec<Card>)`: shuffles the deck in-place by cutting the it in half and inserting the cards back into the deck randomly multiple times
+    - `print(&Vec<Card>)`: prints the contents of the deck
+
 #### game.rs
 - `enum Game` will contain the following variants:
   - `Running`: contains the following fields: 
@@ -111,11 +124,16 @@ This section details each function, struct, and method contained within each mod
     - `discard_pile: Vec<Card>`: holds the cards in the discard pile
   - `Over`: TODO: either contains no fields or contains the field of the winning player
   Implementations for Game: 
-  - `fn new(number_of_players: i32) -> mut Self`: creates a new Game with the `players` field initialized to the `number_of_players` parameter
-  - `fn initialize() -> mut Game`: prompts the user for input and returns a Game struct with the appropriate number of players
-  - `fn deal_cards(players: &mut Vec<Player>, deck: &mut Vec<Card>)`: given the size of the `players` Vec, pops an appropriate ammount of cards (see [Setup](#setup)) from the `deck` into each player's hand in alternating order. This function modifies the `players` in-place without returning anything. The idea behind this decision is similar to [this post](https://softwareengineering.stackexchange.com/a/311120), where the function should do what its name says; if it doesn't *imply* returning a value, then it shouldn't return a value.
-  - `fn play(game: &mut Game)`: iterates through the `players` and calls `player::take_turn` on each player, passing the play deck and discard pile as parameters. 
-- 
+    - `fn new(number_of_players: i32) -> mut Self`: creates a new Game with the `players` field initialized to the `number_of_players` parameter
+    - `fn initialize() -> mut Game`: prompts the user for input and returns a Game struct with the appropriate number of players
+    - `fn deal_cards(players: &mut Vec<Player>, deck: &mut Vec<Card>)`: given the size of the `players` Vec, pops an appropriate ammount of cards (see [Setup](#setup)) from the `deck` into each player's hand in alternating order. This function modifies the `players` in-place without returning anything. The idea behind this decision is similar to [this post](https://softwareengineering.stackexchange.com/a/311120), where the function should do what its name says; if it doesn't *imply* returning a value, then it shouldn't return a value.
+    - `fn play(game: &mut Game)`: iterates through the `players` and calls `player::take_turn` on each player, passing the play deck and discard pile as parameters. 
+
+#### player.rs
+- `struct Player` will contain the following fields:
+  - `name: String`: the name of the Player
+  - `hand: Vec<Card>`: a list of cards in the player's posession
+  
 
 ---
 
