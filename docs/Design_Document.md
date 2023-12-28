@@ -61,10 +61,10 @@ This program will simulate the Crazy Eights card game with all of the gameplay e
 
 ## Program Design
 
-The program will be seaprated into various modules to divide the game into discrete parts. This should make development and maintennance easier, and the code will be separated into distinct files. The first modules to be defined are the card deck, the player structure, and the game itself. The main function will be used to launch the game and associated components.
+The program will be separated into various modules to divide the game into discrete parts. This should make development and maintenance  easier, and the code will be separated into distinct files. The first modules to be defined are the card deck, the player structure, and the game itself. The main function will be used to launch the game and associated components.
 Functions shall be designed to do one thing such that complex tasks are broken down into processes. Functions will aim to be relatively short (< 50 lines) to assist in this goal.
 Named things shall be named according to their purpose, and units shall be appended to variable names where applicable. The goal of this is to create clear, readable code.
-The program is designed to be self-documenting, i.e readable. This documentation exists to assist the developers in defining the program's design and to communicate the intended design to readers and potential contributors.
+The program is designed to be self-documenting, i.e. readable. This documentation exists to assist the developers in defining the program's design and to communicate the intended design to readers and potential contributors.
 
 ## Low Level Design
 
@@ -80,8 +80,8 @@ This section details each function, struct, and method contained within each mod
   - `value: Value`: contains the value of the card
   - `suit: Suit`: contains the suit of the card
   Implementations for Card: 
-    - `new() -> Vec,Self>`: returns a Vec containing 52 Cards representing a standard card deck, henceforth referred to as a deck
-    - `shuffle(&mut Vec<Card>)`: shuffles the deck in-place by cutting the it in half and inserting the cards back into the deck randomly multiple times
+    - `new() -> Vec<Self>`: returns a Vec containing 52 Cards representing a standard card deck, henceforth referred to as a deck
+    - `shuffle(&mut Vec<Card>)`: shuffles the deck in-place by cutting it in half and inserting the cards back into the deck randomly multiple times
     - `print(&Vec<Card>)`: prints the contents of the deck
 
 #### game.rs
@@ -95,14 +95,14 @@ This section details each function, struct, and method contained within each mod
   Implementations for Game: 
     - `fn new(number_of_players: i32, deck: Vec<Card>, pile: Vec,Card>) -> mut Self`: creates a new Game with the `players` field initialized to the `number_of_players` parameter
     - `fn initialize(&mut self)) -> mut Game`: Calls `deal_cards` with the fields of `self` and removes the top card of the `play_deck` and adds it to the `discard_pile`. `update_suit_in_play` is then called with the suit of the card in the discard pile to create the game's initial state. 
-    - `fn deal_cards(players: &mut Vec<Player>, deck: &mut Vec<Card>)`: given the size of the `players` Vec, pops an appropriate ammount of cards (see [Setup](#setup)) from the `deck` into each player's hand in alternating order. 
+    - `fn deal_cards(players: &mut Vec<Player>, deck: &mut Vec<Card>)`: given the size of the `players` Vec, pops an appropriate amount of cards (see [Setup](#setup)) from the `deck` into each player's hand in alternating order. 
     - `fn update_suit_in_play(new_suit: str)`: updates the `suit_in_play` field to the `new_suit` parameter.
     - `fn play(game: &mut Game)`: iterates through the `players` and calls `player::take_turn` on each player, passing the play deck and discard pile as parameters. 
 
 #### player.rs
 - `struct Player` will contain the following fields:
   - `name: String`: the name of the Player
-  - `hand: Vec<Card>`: a list of cards in the player's posession
+  - `hand: Vec<Card>`: a list of cards in the player's possession
   Implementations for Player:
     - `fn draw_card(deck: &mut Vec<Card>, &mut self)`: Given a list of cards (the deck), the player pops the top of the deck and adds it to their hand.
     - `fn play_card(discard_pile: &mut Vec<Card>, card: Card), &mut self`: Given a list of cards (the discard pile) and a Card to be played, the card is added to the top of the discard pile and removed from the hand.
@@ -115,7 +115,7 @@ This section details each function, struct, and method contained within each mod
 
 ## Future Plans
 
-- A gui may be added once the game functions (defined above) are writen
+- A gui may be added once the game functions (defined above) are written
 - Once that is done, networking may be added to enable multiplayer features
 - After that, this game will be re-written in C++ and then Java. It will be good experience to learn the differences between the languages, and it would be interesting to benchmark the performance of each program.
 ---
