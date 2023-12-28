@@ -122,17 +122,26 @@ This section details each function, struct, and method contained within each mod
     - `players: Vec<Player>`: contains a list of each player and their hand
     - `play_deck: Vec<Card>`:  holds the cards in the play deck, to be dealt to each player and added to the discard pile.
     - `discard_pile: Vec<Card>`: holds the cards in the discard pile
+    - `suit_in_play: str`: contains a string of the current suit in play
   - `Over`: TODO: either contains no fields or contains the field of the winning player
   Implementations for Game: 
-    - `fn new(number_of_players: i32) -> mut Self`: creates a new Game with the `players` field initialized to the `number_of_players` parameter
-    - `fn initialize() -> mut Game`: prompts the user for input and returns a Game struct with the appropriate number of players
-    - `fn deal_cards(players: &mut Vec<Player>, deck: &mut Vec<Card>)`: given the size of the `players` Vec, pops an appropriate ammount of cards (see [Setup](#setup)) from the `deck` into each player's hand in alternating order. This function modifies the `players` in-place without returning anything. The idea behind this decision is similar to [this post](https://softwareengineering.stackexchange.com/a/311120), where the function should do what its name says; if it doesn't *imply* returning a value, then it shouldn't return a value.
+    - `fn new(number_of_players: i32, deck: Vec<Card>, pile: Vec,Card>) -> mut Self`: creates a new Game with the `players` field initialized to the `number_of_players` parameter
+    - `fn initialize(&mut self)) -> mut Game`: Calls `deal_cards` with the fields of `self` and removes the top card of the `play_deck` and adds it to the `discard_pile`. `update_suit_in_play` is then called with the suit of the card in the discard pile to create the game's initial state. 
+    - `fn deal_cards(players: &mut Vec<Player>, deck: &mut Vec<Card>)`: given the size of the `players` Vec, pops an appropriate ammount of cards (see [Setup](#setup)) from the `deck` into each player's hand in alternating order. 
+    - `fn update_suit_in_play(new_suit: str)`: updates the `suit_in_play` field to the `new_suit` parameter.
     - `fn play(game: &mut Game)`: iterates through the `players` and calls `player::take_turn` on each player, passing the play deck and discard pile as parameters. 
 
 #### player.rs
 - `struct Player` will contain the following fields:
   - `name: String`: the name of the Player
   - `hand: Vec<Card>`: a list of cards in the player's posession
+  Implementations for Player:
+    - `fn draw_card(deck: &mut Vec<Card>, &mut self)`: Given a list of cards (the deck), the player pops the top of the deck and adds it to their hand.
+    - `fn play_card(discard_pile: &mut Vec<Card>, card: Card), &mut self`: Given a list of cards (the discard pile) and a Card to be played, the card is added to the top of the discard pile and removed from the hand.
+    - `fn play_crazy_eight(discard_pile: &mut Vec<Card>, eight: Card, new_suit: str, &mut self)`: Given a list of cards (the discard pile), a Card (the eight to be played), and a string (the suit to change to), the appropriate eight from the player's hand is added to the top of the discard pile. The Game method `update_suit_in_play` is then called with the suit to change to.
+    - `fn can_play_card(&mut self, top_card: Card) -> bool`: checks if there is a card in the player's hand that matches the suit or value of the top card in the discard pile, returns true if there is a match.
+    - `fn take_turn(deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>, &mut self)`: Given the deck and discard pile as parameters, 
+    calls `can_play_card` to determine if the user can play a card from their deck. If false, `draw_card` is called until `can_play_card` is true. Once a card can be played, the user is given a list of possible cards to play and asked to choose one. Once the user chooses a card, `play_card` or `play_crazy_eight` is called depending on their choice. If their choice is an eight, the user is also asked for the suit they would like to change to. 
 
 ---
 
