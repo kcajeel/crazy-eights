@@ -108,8 +108,10 @@ This section details each function, struct, and method contained within each mod
     - `fn play_card(discard_pile: &mut Vec<Card>, card: Card), &mut self`: Given a list of cards (the discard pile) and a Card to be played, the card is added to the top of the discard pile and removed from the hand.
     - `fn play_crazy_eight(discard_pile: &mut Vec<Card>, eight: Card, new_suit: str, &mut self)`: Given a list of cards (the discard pile), a Card (the eight to be played), and a string (the suit to change to), the appropriate eight from the player's hand is added to the top of the discard pile. The Game method `update_suit_in_play` is then called with the suit to change to.
     - `fn can_play_card(&mut self, top_card: Card) -> bool`: checks if there is a card in the player's hand that matches the suit or value of the top card in the discard pile, returns true if there is a match.
+    - `fn prompt_user_for_card(cards: Vec<Card>) -> Card`: prompts the user to choose a card to play from a list of possible cards and returns the chosen card.
     - `fn take_turn(deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>, &mut self)`: Given the deck and discard pile as parameters, 
-    calls `can_play_card` to determine if the user can play a card from their deck. If false, `draw_card` is called until `can_play_card` is true. Once a card can be played, the user is given a list of possible cards to play and asked to choose one. Once the user chooses a card, `play_card` or `play_crazy_eight` is called depending on their choice. If their choice is an eight, the user is also asked for the suit they would like to change to. 
+    calls `can_play_card` to determine if the user can play a card from their deck. If false, `draw_card` is called until `can_play_card` is true. Once a card can be played, `prompt_user_for_card` is called with a list of the possible cards. 
+    Once the user chooses a card, `play_card` or `play_crazy_eight` is called depending on their choice. If their choice is an eight, the user is also asked for the suit they would like to change to. 
 
 ---
 
