@@ -8,7 +8,7 @@ Contents:
 
 [Program Design](#program-design)
 
-[High Level Design](#high-level-design)
+[Low Level Design](#low-level-design)
 
 [Future Plans](#future-plans)
 
@@ -66,39 +66,7 @@ Functions shall be designed to do one thing such that complex tasks are broken d
 Named things shall be named according to their purpose, and units shall be appended to variable names where applicable. The goal of this is to create clear, readable code.
 The program is designed to be self-documenting, i.e readable. This documentation exists to assist the developers in defining the program's design and to communicate the intended design to readers and potential contributors.
 
-### High Level Design
-
-This section goes over each file in the program and lists their contents. 
-
-#### main.rs
--   The entrypoint for the program, the code in this file is light and relies on the underlying modules. 
--   `fn main()`: main function, used to call `game::run_game()`
-
-#### deck.rs
--  Contains the functions and data structures necessary to construct a deck of cards. 
-- `enum Value`: contains all possible Card values
-- `enum Suit`: contains all possible Card suits
-- `struct Card`: contains the information used in a playing card
-- `fn new(&mut Vec<Card>)`: creates a standard 52-card deck with the Card struct
-- `fn print(&Vec<Card>)`: prints the cards in the deck
-- `fn shuffle(&mut Vec<Card>)`: shuffles the deck inplace
-
-#### game.rs
-- Contains the functions necessary to run the game logic
-- `enum Game`: an enum with two variants: Running and Over, to signify the game's state.
-- `fn initialize()`: initializes the game state by creating a Game struct with the appropriate number of players
-- `fn deal_cards(&mut Vec<Player>)`: assigns a portion of the deck to each player in the list of players
-- `fn play(&mut Game)`: calls each player's `take_turn` function in order until the game is won
-
-#### player.rs
-- Contains the data structures and functions for players to perform game actions
-- `struct Player`: a representation of the player with a name and a `hand` field representing the cards in the player's hand
-- `fn draw_card(&mut Vec<Card>)`: adds a card to the player's hand
-- `fn play_card(&mut Vec<Card>)`: removes a given card from the player's hand
-- `fn play_crazy_eight(&mut Vec<Card>, str)`: removes an eight from the player's hand and specifies the desired suit
-- `fn take_turn(&mut Vec<Card>, &mut Vec<Card>)`: prompts the user associated with the player for input and allows them to draw or play a card from their hand
-
-### Low Level Design
+## Low Level Design
 
 This section details each function, struct, and method contained within each module. It emphasizes implementation details such as the inner workings of functions and how modules and functions will relate to one another. 
 
