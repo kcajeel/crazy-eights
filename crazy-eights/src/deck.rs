@@ -1,6 +1,8 @@
 use rand::Rng;
+use strum::IntoEnumIterator;
+use strum_macros::EnumIter;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, EnumIter)]
 enum Value {
     Ace,
     Two,
@@ -38,7 +40,7 @@ impl Value {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, EnumIter)]
 enum Suit {
     Hearts,
     Diamonds,
@@ -46,32 +48,34 @@ enum Suit {
     Clubs,
 }
 
+impl Suit {
+    pub fn from_str(str: &str) -> Option<Suit> {
+        match str {
+            "Hearts" => Some(Suit::Hearts),
+            "Diamonds" => Some(Suit::Diamonds),
+            "Spades" => Some(Suit::Spades),
+            "Clubs" => Some(Suit::Clubs),
+            _ => None
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct Card {
-    value: Option<Value>,
-    suit: Option<Suit>,
+    value: Value,
+    suit: Suit,
 }
 
 impl Card {
     pub fn new_deck() -> Vec<Self> {
-        let mut deck: Vec<Card> = vec![];
-        for i in 0..52 {
-            deck.push(Card {
-                // i%13 gives card number, if 0 then number = 13 (king)
-                value: if i % 13 != 0 {
-                    Value::from_int(i % 13)
-                } else {
-                    Value::from_int(13)
-                },
-                // i/13 gives card suit (52/13=4)
-                suit: match i / 13 {
-                    0 => Some(Suit::Hearts),
-                    1 => Some(Suit::Diamonds),
-                    2 => Some(Suit::Clubs),
-                    3 => Some(Suit::Spades),
-                    _ => None,
-                },
-            })
+        let mut deck:Vec<Card> = vec![];
+        for suit in Suit::iter() {
+            for value in Value::iter() {
+                deck.push(Card {
+                    value,
+                    suit: suit.clone(),
+                });
+            }
         }
         deck
     }
