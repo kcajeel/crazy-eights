@@ -2,8 +2,8 @@ use rand::Rng;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
-#[derive(Clone, Debug, EnumIter)]
-enum Value {
+#[derive(Clone, Debug, EnumIter, PartialEq)]
+pub enum Value {
     Ace,
     Two,
     Three,
@@ -19,18 +19,18 @@ enum Value {
     King,
 }
 
-#[derive(Clone, Debug, EnumIter)]
-enum Suit {
+#[derive(Clone, Copy, Debug, EnumIter, PartialEq)]
+pub enum Suit {
     Hearts,
     Diamonds,
     Spades,
     Clubs,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct Card {
-    value: Value,
-    suit: Suit,
+    pub value: Value,
+    pub suit: Suit,
 }
 
 impl Card {
@@ -47,7 +47,7 @@ impl Card {
         deck
     }
 
-    fn shuffle(deck: &mut Vec<Card>) {
+    pub fn shuffle(deck: &mut Vec<Card>) {
         let mut deck_clone = deck.clone();
         let mut bottom_half = deck_clone.split_off(deck_clone.len() / 2);
         let mut top_half = deck_clone;
@@ -69,7 +69,7 @@ impl Card {
         *deck = shuffled_deck;
     }
 
-    fn print(deck: &Vec<Card>) {
+    pub fn print(deck: &Vec<Card>) {
         for i in deck.iter() {
             println!("Suit: {:?}, Number: {:?}", i.suit, i.value);
         }
