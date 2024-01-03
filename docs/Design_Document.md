@@ -74,44 +74,48 @@ This section details each function, struct, and method contained within each mod
 - `fn main(number_of_players: i32)` will call `game::Game::new(number_of_players)` to create a Game struct with the appropriate number of players. It will then call `game::run_game()` with the struct it created. 
 
 #### deck.rs
-- `enum Value`: will contain the variants for each value Name in the [Setup table](#setup)
-- `enum Suit`: will contain variants for each suit, namely `Hearts`, `Diamonds`, `Spades`, and `Clubs`.
-- `struct Card` will contain the following fields:
-  - `value: Value`: contains the value of the card
-  - `suit: Suit`: contains the suit of the card
+- `pub enum Value`: will contain the variants for each value Name in the [Setup table](#setup)
+- `pub enum Suit`: will contain variants for each suit, namely `Hearts`, `Diamonds`, `Spades`, and `Clubs`.
+- `pub struct Card` will contain the following fields:
+  - `pub value: Value`: contains the value of the card
+  - `pub suit: Suit`: contains the suit of the card
   Implementations for Card: 
-    - `new() -> Vec<Self>`: returns a Vec containing 52 Cards representing a standard card deck, henceforth referred to as a deck
-    - `shuffle(&mut Vec<Card>)`: shuffles the deck in-place by cutting it in half and inserting the cards back into the deck randomly multiple times
-    - `print(&Vec<Card>)`: prints the contents of the deck
+    - `pub fn is_similar(some_card: &Card, other_card: &Card) -> bool`: returns `true` if the two cards are "similar", that is if either the suits or values match. This is used to determine if a card is playable.
+Functions of `deck`:
+    - `pub fn new() -> Vec<Card>`: returns a Vec containing 52 Cards representing a standard card deck, henceforth referred to as a deck
+    - `pub fn shuffle(deck: &mut Vec<Card>)`: shuffles the deck in-place by cutting it in half and inserting the cards back into the deck randomly multiple times
+    - `pub fn shuffle_discard_pile(deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>)`: if the deck is empty, takes the top card of the discard pile and stores it to a local variable `top_card`. Then, the discard pile is appended to the deck, the deck is shuffled, and the `top_card` is added back into the discard pile.
+    - `pub fn print(deck: &Vec<Card>)`: prints the contents of the deck
+
+#### player.rs
+- `pub struct Player` will contain the following fields:
+  - `pub name: String`: the name of the Player
+  - `pub hand: Vec<Card>`: a list of cards in the player's possession
+  Implementations for Player:
+    - `pub fn new(name: String, hand: Option<Vec<Card>>) -> Self`: Given a name and optionally a hand, returns a new Player.
+    - `fn draw_card(hand: &mut Vec<Card>, deck: &mut Vec<Card>)`: Given a list of cards (the deck), the player pops the top of the deck and adds it to their hand.
+    - `fn get_playable_cards(hand: &Vec<Card>, top_card: Card) -> Vec<Card>`: given a player's hand and the top card of the discard pile, returns a list of all the cards in the player's hand that can be played using `Card::is_similar`.
+    - `fn prompt_user_for_card(cards: Vec<Card>) -> Card`: prompts the user to choose a card to play from a list of possible cards and returns the chosen card.
+    - `fn prompt_user_for_suit() -> Suit`: prompts the user to choose a suit to change the discard pile to and returns the chosen suit.
+    - `fn change_suit_in_play(mut old_suit: &Suit, new_suit: &Suit)`: assigns the value of `new_suit` to `old_suit`.
+    - `fn play_card(hand: &mut Vec<Card>, discard_pile: &mut Vec<Card>, card: Card, suit_in_play: &mut Suit)`: Given a list of cards (the discard pile) and a Card to be played, the card is added to the top of the discard pile and removed from the hand. If the card's value is an Eight, then `prompt_user_for_suit` is called and the suit is changed with `change_suit_in_play`.
+    - `fn take_turn(hand: &mut Vec<Card>, deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>, suit_in_play: &mut Suit)`: Given the deck and discard pile as parameters, calls `get_playable_cards` to determine if the user can play any cards from their deck. If the list is empty, `draw_card` is called until the list of playable cards is ntot empty. Once a card can be played, `prompt_user_for_card` is called with a list of the possible cards. Once the user chooses a card, `play_card` is called.
 
 #### game.rs
 - `enum Game` will contain the following variants:
   - `Running`: contains the following fields: 
     - `players: Vec<Player>`: contains a list of each player and their hand
-    - `play_deck: Vec<Card>`:  holds the cards in the play deck, to be dealt to each player and added to the discard pile.
+    - `deck: Vec<Card>`:  holds the cards in the play deck, to be dealt to each player and added to the discard pile.
     - `discard_pile: Vec<Card>`: holds the cards in the discard pile
     - `suit_in_play: str`: contains a string of the current suit in play
   - `Over`: TODO: either contains no fields or contains the field of the winning player
   Implementations for Game: 
     - `fn new(number_of_players: i32, deck: Vec<Card>, pile: Vec,Card>) -> mut Self`: creates a new Game with the `players` field initialized to the `number_of_players` parameter
-    - `fn initialize(&mut self)) -> mut Game`: Calls `deal_cards` with the fields of `self` and removes the top card of the `play_deck` and adds it to the `discard_pile`. `update_suit_in_play` is then called with the suit of the card in the discard pile to create the game's initial state. 
+    - `fn get_player_names(number_of_players: i32) -> Vec<String>`: given the number of players in the game, prompts the user for a name for each player and returns the list of names.
+    - `fn initialize_players(number_of_players: i32, names: Vec<String>) -> Vec<Player>`: given the number of players and list of names, initializes the appropriate number of Players to the list of names with empty `hand` fields and returns a list of the players.
     - `fn deal_cards(players: &mut Vec<Player>, deck: &mut Vec<Card>)`: given the size of the `players` Vec, pops an appropriate amount of cards (see [Setup](#setup)) from the `deck` into each player's hand in alternating order. 
-    - `fn update_suit_in_play(new_suit: str)`: updates the `suit_in_play` field to the `new_suit` parameter.
-    - `fn play(game: &mut Game)`: iterates through the `players` and calls `player::take_turn` on each player, passing the play deck and discard pile as parameters. 
-
-#### player.rs
-- `struct Player` will contain the following fields:
-  - `name: String`: the name of the Player
-  - `hand: Vec<Card>`: a list of cards in the player's possession
-  Implementations for Player:
-    - `fn draw_card(deck: &mut Vec<Card>, &mut self)`: Given a list of cards (the deck), the player pops the top of the deck and adds it to their hand.
-    - `fn play_card(discard_pile: &mut Vec<Card>, card: Card), &mut self`: Given a list of cards (the discard pile) and a Card to be played, the card is added to the top of the discard pile and removed from the hand.
-    - `fn play_crazy_eight(discard_pile: &mut Vec<Card>, eight: Card, new_suit: str, &mut self)`: Given a list of cards (the discard pile), a Card (the eight to be played), and a string (the suit to change to), the appropriate eight from the player's hand is added to the top of the discard pile. The Game method `update_suit_in_play` is then called with the suit to change to.
-    - `fn can_play_card(&mut self, top_card: Card) -> bool`: checks if there is a card in the player's hand that matches the suit or value of the top card in the discard pile, returns true if there is a match.
-    - `fn prompt_user_for_card(cards: Vec<Card>) -> Card`: prompts the user to choose a card to play from a list of possible cards and returns the chosen card.
-    - `fn take_turn(deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>, &mut self)`: Given the deck and discard pile as parameters, 
-    calls `can_play_card` to determine if the user can play a card from their deck. If false, `draw_card` is called until `can_play_card` is true. Once a card can be played, `prompt_user_for_card` is called with a list of the possible cards. 
-    Once the user chooses a card, `play_card` or `play_crazy_eight` is called depending on their choice. If their choice is an eight, the user is also asked for the suit they would like to change to. 
+    - `fn initialize(&mut self)`: Calls `deal_cards` with the fields of `self` and removes the top card of the `play_deck` and adds it to the `discard_pile`. `update_suit_in_play` is then called with the suit of the card in the discard pile to create the game's initial state. 
+    - `fn play(&mut self)`: iterates through the `players` and calls `player::take_turn` on each player, passing the play deck and discard pile as parameters. 
 
 ---
 
