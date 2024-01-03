@@ -8,11 +8,11 @@ pub struct Player {
 }
 
 impl Player {
-    fn new(name: String, hand: Vec<Card>) -> Self {
+    pub fn new(name: String, hand: Vec<Card>) -> Self {
         Self { name, hand }
     }
 
-    fn draw_card(hand: &mut Vec<Card>, deck: &mut Vec<Card>) {
+    pub fn draw_card(hand: &mut Vec<Card>, deck: &mut Vec<Card>) {
         match deck.pop() {
             Some(card) => hand.push(card),
             None => panic!(), //TODO: implement DeckEmptyError
@@ -56,7 +56,7 @@ impl Player {
         old_suit = new_suit;
     }
 
-    fn take_turn(hand: &mut Vec<Card>, deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>, suit_in_play: &mut Suit) {
+    pub fn take_turn(hand: &mut Vec<Card>, deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>, suit_in_play: &mut Suit) {
         if let Some(top_card) = discard_pile.pop() {
             let playable_cards = Self::get_playable_cards(hand, &top_card);
             
