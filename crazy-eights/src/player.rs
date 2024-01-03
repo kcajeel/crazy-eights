@@ -4,11 +4,11 @@ use crate::
 
 pub struct Player {
     pub name: String,
-    pub hand: Option<Vec<Card>>,
+    pub hand: Vec<Card>,
 }
 
 impl Player {
-    fn new(name: String, hand: Option<Vec<Card>>) -> Self {
+    fn new(name: String, hand: Vec<Card>) -> Self {
         Self { name, hand }
     }
 
@@ -19,19 +19,10 @@ impl Player {
         }
     }
 
-    //TODO: consider moving this function to another scope
-    //It doesn't need to be a method of Card, but it should be associated
-    fn is_card_playable(some_card: &Card, top_card: &Card) -> bool {
-        if some_card.suit.eq(&top_card.suit) || some_card.value.eq(&top_card.value) {
-            return true;
-        }
-        return false;
-    }
-
     fn get_playable_cards(hand: &Vec<Card>, top_card: &Card) -> Vec<Card> {
         let mut playable_cards = vec![];
         for card in hand {
-            if Self::is_card_playable(card, top_card) {
+            if Card::is_similar(card, top_card) {
                 playable_cards.push(*card);
             }
         }
@@ -56,6 +47,8 @@ impl Player {
     }
 
     fn prompt_user_for_suit() -> Suit {
+        println!("You have played a Crazy Eight. Which suit would you like to enforce?");
+        
         //TODO: implement user input
     }
 
@@ -64,12 +57,12 @@ impl Player {
     }
 
     fn take_turn(hand: &mut Vec<Card>, deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>, suit_in_play: &mut Suit) {
-        if let Some(top_card) = discard_pile.get(0) {
-            let playable_cards = Self::get_playable_cards(hand, top_card);
+        if let Some(top_card) = discard_pile.pop() {
+            let playable_cards = Self::get_playable_cards(hand, &top_card);
             
             while playable_cards.is_empty() {
                 if deck.is_empty() {
-                    //shuffle all discard_pile except the top
+                    
                 }
                 Self::draw_card(hand, deck);
             }
