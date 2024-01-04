@@ -79,6 +79,7 @@ This section details each function, struct, and method contained within each mod
 - `pub struct Card` will contain the following fields:
   - `pub value: Value`: contains the value of the card
   - `pub suit: Suit`: contains the suit of the card
+    
   Implementations for Card: 
     - `pub fn is_similar(some_card: &Card, other_card: &Card) -> bool`: returns `true` if the two cards are "similar", that is if either the suits or values match. This is used to determine if a card is playable.
 Functions of `deck`:
@@ -91,6 +92,7 @@ Functions of `deck`:
 - `pub struct Player` will contain the following fields:
   - `pub name: String`: the name of the Player
   - `pub hand: Vec<Card>`: a list of cards in the player's possession
+  
   Implementations for Player:
     - `pub fn new(name: String, hand: Option<Vec<Card>>) -> Self`: Given a name and optionally a hand, returns a new Player.
     - `fn draw_card(hand: &mut Vec<Card>, deck: &mut Vec<Card>)`: Given a list of cards (the deck), the player pops the top of the deck and adds it to their hand.
@@ -109,7 +111,8 @@ Functions of `deck`:
     - `discard_pile: Vec<Card>`: holds the cards in the discard pile
     - `suit_in_play: str`: contains a string of the current suit in play
   - `Over`: TODO: either contains no fields or contains the field of the winning player
-  Implementations for Game: 
+
+   Implementations for Game: 
     - `fn new(number_of_players: i32, deck: Vec<Card>, pile: Vec,Card>) -> mut Self`: creates a new Game with the `players` field initialized to the `number_of_players` parameter
     - `fn get_player_names(number_of_players: i32) -> Vec<String>`: given the number of players in the game, prompts the user for a name for each player and returns the list of names.
     - `fn initialize_players(number_of_players: i32, names: Vec<String>) -> Vec<Player>`: given the number of players and list of names, initializes the appropriate number of Players to the list of names with empty `hand` fields and returns a list of the players.
