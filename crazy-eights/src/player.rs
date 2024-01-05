@@ -1,3 +1,5 @@
+use std::io;
+
 use crate::deck::{Card, Suit, Value};
 
 #[derive(PartialEq)]
@@ -29,7 +31,43 @@ impl Player {
     }
 
     fn prompt_user_for_card(cards: Vec<Card>) -> Card {
-        //TODO: implement user input
+        println!("You can play the following cards: \n");
+
+        for card in cards {
+            Card::print(&card);
+        }
+
+        //This implementation is just for testing, I plan on using the "tui" and "crossterm" crates for a "real" UI. Hence, no error checking here.
+        println!("Which card would you like to play? ");
+        let mut user_input = String::new();
+        io::stdin()
+            .read_line(&mut user_input)
+            .expect("failed to read line");
+        println!("You played {}.", user_input);
+
+        let input_vec: Vec<&str> = user_input.split(' ').collect();
+
+        let card_value = if let Some(value) = input_vec.get(0) {
+            match Value::from_string(*value) {
+                Ok(val) => val,
+                Err(_error) => Value::Ace,
+            }
+        } else {
+            Value::Ace
+        };
+
+        let card_suit = if let Some(suit) = input_vec.get(2) {
+            match Suit::from_string(*suit) {
+                Ok(suit) => suit,
+                Err(_error) => Suit::Clubs,
+            }
+        } else {
+            Suit::Clubs
+        };
+        Card {
+            value: card_value,
+            suit: card_suit,
+        }
     }
 
     fn play_card(
@@ -51,13 +89,20 @@ impl Player {
     }
 
     fn prompt_user_for_suit() -> Suit {
-        println!("You have played a Crazy Eight. Which suit would you like to enforce?");
+        println!("You have played a Crazy Eight. Which suit would you like to select?");
+        let mut user_input = String::new();
 
-        //TODO: implement user input
+        io::stdin().read_line(&mut user_input).expect("could not read input");
+        println!("You selected: {}", user_input);
+
+        match Suit::from_string(&user_input.trim()) {
+            Ok(suit) => suit,
+            Err(_error) => Suit::Clubs,
+        }
     }
 
-    fn change_suit_in_play(mut old_suit: &Suit, new_suit: &Suit) {
-        old_suit = new_suit;
+    fn change_suit_in_play<'a>(mut _old_suit: &'a Suit, new_suit: &'a Suit) {
+        _old_suit = new_suit;
     }
 
     pub fn take_turn(
