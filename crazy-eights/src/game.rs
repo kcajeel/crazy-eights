@@ -1,6 +1,6 @@
 use crate::{
     deck::{Card, Suit},
-    player::Player,
+    player::{Player, self},
 };
 
 #[derive(PartialEq)]
@@ -15,7 +15,7 @@ pub enum Game {
 }
 
 impl Game {
-    fn new(number_of_players: i32, mut deck: Vec<Card>) -> Self {
+    fn new(number_of_players: i32, deck: Vec<Card>) -> Self {
         if is_number_of_players_valid(number_of_players) {
             Game::Running {
                 players: Self::initialize_players(
@@ -32,14 +32,22 @@ impl Game {
     }
 
     fn get_player_names(number_of_players: i32) -> Vec<String> {
-        //TODO user input ;)
-        vec!["example name".to_string()]
+        println!("There are {} players in this game. ", number_of_players);
+        let mut player_names = vec![];
+        for i in 1..number_of_players {
+            println!("Please enter the name for player {}.", i);
+            let mut user_input = String::new();
+            std::io::stdin().read_line(&mut user_input).expect("Failed to read input");
+            println!("You entered: {}", user_input);
+            player_names.push(user_input);
+        }
+        player_names
     }
 
     fn initialize_players(number_of_players: i32, mut names: Vec<String>) -> Vec<Player> {
         let mut players = Vec::with_capacity(number_of_players as usize);
 
-        for i in 0..number_of_players {
+        for _i in 0..number_of_players {
             players.push(Player::new(
                 match names.pop() {
                     Some(name) => name,
@@ -54,8 +62,8 @@ impl Game {
     fn deal_cards(players: &mut Vec<Player>, deck: &mut Vec<Card>) {
         let cards_per_player = if players.len() == 2 { 7 } else { 5 };
 
-        for i in 0..cards_per_player {
-            for mut player in players {
+        for _i in 0..cards_per_player {
+            for player in &mut *players {
                 if let Some(card) = deck.pop() {
                     player.hand.push(card);
                 }
@@ -65,25 +73,25 @@ impl Game {
 
     pub fn initialize(&mut self) {
         if let Game::Running {
-            players: players,
-            deck: deck,
-            discard_pile: discard_pile,
-            suit_in_play: mut suit_in_play,
+            players,
+            deck,
+            discard_pile,
+            suit_in_play,
         } = self
         {
             Self::deal_cards(players, deck);
             if let Ok(card) = initialize_discard_pile(deck, discard_pile) {
-                suit_in_play = card.suit;
+                *suit_in_play = card.suit;
             }
         }
     }
 
     pub fn play(&mut self) {
         if let Game::Running {
-            players: players,
-            deck: deck,
-            discard_pile: discard_pile,
-            suit_in_play: suit_in_play,
+            players,
+            deck,
+            discard_pile,
+            suit_in_play,
         } = self
         {
             for player in players {
@@ -96,8 +104,7 @@ impl Game {
     }
 
     pub fn end_game(&mut self) {
-        let over = &mut Game::Over;
-        self = over;
+        *self = Game::Over;
     }
 }
 
