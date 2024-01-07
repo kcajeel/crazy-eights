@@ -72,7 +72,8 @@ The program is designed to be self-documenting, i.e. readable. This documentatio
 This section details each function, struct, and method contained within each module. It emphasizes implementation details such as the inner workings of functions and how modules and functions will relate to one another. 
 
 #### main.rs
-- `fn main(number_of_players: i32)` will call `game::Game::new(number_of_players)` to create a Game struct with the appropriate number of players. It will then call `game::run_game()` with the struct it created. 
+- `fn promp_user_for_number_of_players() -> i32`: prompts the user for a number of players and returns the number
+- `fn main()` will call `pompt_user_for_number_of_players` to get the number of players. Then calls `Game::new()` to create a Game struct with the appropriate number of players. It will then call `run_game()` with the struct it created. 
 
 #### deck.rs
 - `pub enum Value`: will contain the variants for each value Name in the [Setup table](#setup)
