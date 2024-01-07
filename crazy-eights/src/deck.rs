@@ -1,8 +1,11 @@
-use rand::{Rng, seq::SliceRandom};
+use std::fmt::Display;
+
+use crate::error::DeckError;
+use rand::seq::SliceRandom;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
-#[derive(Clone, Copy, Debug, EnumIter, PartialEq)]
+#[derive(Clone, Copy, EnumIter, PartialEq)]
 pub enum Value {
     Ace,
     Two,
@@ -18,8 +21,30 @@ pub enum Value {
     Queen,
     King,
 }
-impl Value {
-    pub fn from_int(value: i32) -> Result<Self, String> {
+impl Display for Value {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let value_string = match self {
+            Value::Ace => "Ace",
+            Value::Two => "Two",
+            Value::Three => "Three",
+            Value::Four => "Four",
+            Value::Five => "Five",
+            Value::Six => "Six",
+            Value::Seven => "Seven",
+            Value::Eight => "Eight",
+            Value::Nine => "Nine",
+            Value::Ten => "Ten",
+            Value::Jack => "Jack",
+            Value::Queen => "Queen",
+            Value::King => "King",
+        };
+        write!(f, "{}", value_string)
+    }
+}
+impl TryFrom<i32> for Value {
+    type Error = DeckError;
+
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
         match value {
             1 => Ok(Value::Ace),
             2 => Ok(Value::Two),
@@ -34,52 +59,64 @@ impl Value {
             11 => Ok(Value::Jack),
             12 => Ok(Value::Queen),
             13 => Ok(Value::King),
-            _ => Err("invalid card value".to_string()),    //implement error type
+            _ => Err(DeckError::InvalidValue), //implement error type
         }
     }
+}
+impl TryFrom<&str> for Value {
+    type Error = DeckError;
 
-    pub fn from_string(string: &str) -> Result<Self, String> {
-            match string.to_lowercase().as_str() {
-                "one" => Ok(Value::Ace),
-                "two" => Ok(Value::Two),
-                "three" => Ok(Value::Three),
-                "four" => Ok(Value::Four),
-                "five" => Ok(Value::Five),
-                "six" => Ok(Value::Six),
-                "seven" => Ok(Value::Seven),
-                "eight" => Ok(Value::Eight),
-                "nine" => Ok(Value::Nine),
-                "ten" => Ok(Value::Ten),
-                "jack" => Ok(Value::Jack),
-                "queen" => Ok(Value::Queen),
-                "king" => Ok(Value::King),
-                _ => Err("invalid card Value".to_string()),    //implement error type
-            }
-        
+    fn try_from(string: &str) -> Result<Self, Self::Error> {
+        match string.to_lowercase().as_str() {
+            "one" => Ok(Value::Ace),
+            "two" => Ok(Value::Two),
+            "three" => Ok(Value::Three),
+            "four" => Ok(Value::Four),
+            "five" => Ok(Value::Five),
+            "six" => Ok(Value::Six),
+            "seven" => Ok(Value::Seven),
+            "eight" => Ok(Value::Eight),
+            "nine" => Ok(Value::Nine),
+            "ten" => Ok(Value::Ten),
+            "jack" => Ok(Value::Jack),
+            "queen" => Ok(Value::Queen),
+            "king" => Ok(Value::King),
+            _ => Err(DeckError::InvalidValue), //implement error type
+        }
     }
 }
 
-
-#[derive(Clone, Copy, Debug, EnumIter, PartialEq)]
+#[derive(Clone, Copy, EnumIter, PartialEq)]
 pub enum Suit {
     Hearts,
     Diamonds,
     Spades,
     Clubs,
 }
-impl Suit {
-    pub fn from_string(string: &str) -> Result<Self, String> {
+impl Display for Suit {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let suit_string = match self {
+            Suit::Clubs => "Clubs",
+            Suit::Hearts => "Hearts",
+            Suit::Diamonds => "Diamonds",
+            Suit::Spades => "Spades",
+        };
+        write!(f, "{}", suit_string)
+    }
+}
+impl TryFrom<&str> for Suit {
+    type Error = DeckError;
+
+    fn try_from(string: &str) -> Result<Self, Self::Error> {
         match string.to_lowercase().as_str() {
             "hearts" => Ok(Suit::Hearts),
             "diamonds" => Ok(Suit::Diamonds),
             "spades" => Ok(Suit::Spades),
             "clubs" => Ok(Suit::Clubs),
-            _ => Err("invalid card Suit".to_string()),    //implement error type
+            _ => Err(DeckError::InvalidSuit),
         }
-    
+    }
 }
-}
-
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Card {
@@ -88,15 +125,15 @@ pub struct Card {
 }
 
 impl Card {
-    pub fn is_similar(some_card: &Card, top_card: &Card) -> bool {
-        if some_card.suit.eq(&top_card.suit) || some_card.value.eq(&top_card.value) {
+    pub fn is_similar(some: &Card, other: &Card) -> bool {
+        if some.suit.eq(&other.suit) || some.value.eq(&other.value) {
             return true;
         }
         return false;
     }
 
     pub fn print(&self) {
-        println!("{:?} of {:?}", self.value, self.suit);
+        println!("{} of {}", self.value, self.suit);
     }
 }
 
@@ -113,29 +150,6 @@ pub fn new_deck() -> Vec<Card> {
     deck
 }
 
-//I might delete this and use the Rand shuffle because it seems more efficient
-pub fn shuffle(deck: &mut Vec<Card>) {
-    let mut deck_clone = deck.clone();
-    let mut bottom_half = deck_clone.split_off(deck_clone.len() / 2);
-    let mut top_half = deck_clone;
-    let mut shuffled_deck: Vec<Card> = vec![];
-
-    while !bottom_half.is_empty() || !top_half.is_empty() {
-        let random_number = rand::thread_rng().gen::<i32>();
-
-        if random_number % 2 == 0 && !bottom_half.is_empty() {
-            if let Some(card) = bottom_half.pop() {
-                shuffled_deck.push(card);
-            }
-        } else if !top_half.is_empty() {
-            if let Some(card) = top_half.pop() {
-                shuffled_deck.push(card);
-            }
-        }
-    }
-    *deck = shuffled_deck;
-}
-
 pub fn shuffle_discard_pile(deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>) {
     if deck.is_empty() {
         if let Some(top_card) = discard_pile.pop() {
@@ -147,7 +161,7 @@ pub fn shuffle_discard_pile(deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>) 
 }
 
 pub fn print_deck(deck: &Vec<Card>) {
-    for i in deck.iter() {
-        println!("Suit: {:?}, Number: {:?}", i.suit, i.value);
+    for card in deck.iter() {
+        Card::print(card);
     }
 }
