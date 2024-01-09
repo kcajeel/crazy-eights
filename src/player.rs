@@ -17,7 +17,7 @@ impl Player {
         println!("Drawing from the deck. ");
         if let Some(card) = deck.pop() {
             hand.push(card);
-            println!("You drew the ");
+            print!("You drew the ");
             card.print();
         } else {
             panic!("Error: deck empty");
@@ -42,7 +42,7 @@ impl Player {
     }
 
     fn prompt_user_for_card(cards: Vec<Card>) -> Card {
-        println!("You can play the following cards: \n");
+        println!("You can play the following cards: ");
         deck::print_deck(&cards);
         println!("Which card would you like to play? ");
 
@@ -134,11 +134,17 @@ impl Player {
             .expect("discard pile empty");
         let mut playable_cards = Self::get_playable_cards(hand, &top_card.clone(), suit_in_play);
 
-        print!(
-            "You have {} cards in your hand. Card to match: ",
-            hand.len()
-        );
-        top_card.print();
+        print!("You have {} cards in your hand. ", hand.len());
+
+        if top_card.value == Value::Eight && top_card.suit != *suit_in_play {
+            print!(
+                "A Crazy Eight was played. You can now play cards of suit {}",
+                suit_in_play
+            );
+        } else {
+            print!("Card to match: ");
+            top_card.print();
+        }
         while playable_cards.is_empty() {
             print!("No playable cards. ");
             if deck.is_empty() {
@@ -148,6 +154,8 @@ impl Player {
             Self::draw_card(hand, deck);
             playable_cards = Self::get_playable_cards(hand, top_card, suit_in_play);
         }
+        println!("Your hand contains the following cards: ");
+        deck::print_deck(hand);
         Self::play_card(
             hand,
             discard_pile,
