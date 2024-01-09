@@ -73,7 +73,7 @@ This section details each function, struct, and method contained within each mod
 
 #### main.rs
 - `fn promp_user_for_number_of_players() -> i32`: prompts the user for a number of players and returns the number
-- `fn main()` will call `pompt_user_for_number_of_players` to get the number of players. Then calls `Game::new()` to create a Game struct with the appropriate number of players. It will then call `run_game()` with the struct it created. 
+- `fn main()`: calls `pompt_user_for_number_of_players` to get the number of players. Then, creates a deck with `deck::new_deck()` and shuffles it. `Game::new()` is called to create a Game struct with the appropriate number of players and `Game::initialize()` is called to create the game's initial state, with errors being caught. Then `Game::play()` is called to start the game. 
 
 #### deck.rs
 - `pub enum Value`: will contain the variants for each value Name in the [Setup table](#setup)
@@ -99,7 +99,7 @@ This section details each function, struct, and method contained within each mod
   Implementations for Player:
     - `pub fn new(name: String, hand: Option<Vec<Card>>) -> Self`: Given a name and optionally a hand, returns a new Player.
     - `fn draw_card(hand: &mut Vec<Card>, deck: &mut Vec<Card>)`: Given a list of cards (the deck), the player pops the top of the deck and adds it to their hand.
-    - `fn get_playable_cards(hand: &Vec<Card>, top_card: Card) -> Vec<Card>`: given a player's hand and the top card of the discard pile, returns a list of all the cards in the player's hand that can be played using `Card::is_similar`.
+    - `fn get_playable_cards(hand: &Vec<Card>, top_card: Card, suit_in_play: &mut Suit) -> Vec<Card>`: given a player's hand and the top card of the discard pile, returns a list of all the cards in the player's hand that can be played using `Card::is_similar`. If the top card's suit differs from the suit in play, i.e. a crazy eight has changed the suit, a list of cards matching the suit in play is returned.
     - `fn prompt_user_for_card(cards: Vec<Card>) -> Card`: prompts the user to choose a card to play from a list of possible cards and returns the chosen card.
     - `fn prompt_user_for_suit() -> Suit`: prompts the user to choose a suit to change the discard pile to and returns the chosen suit.
     - `fn change_suit_in_play(mut old_suit: &Suit, new_suit: &Suit)`: assigns the value of `new_suit` to `old_suit`.
