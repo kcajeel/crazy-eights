@@ -2,10 +2,11 @@ use std::error::Error;
 
 use crate::{
     deck::{Card, Suit},
-    player::Player, error::{DeckError, GameError},
+    error::{DeckError, GameError},
+    player::Player,
 };
 
-#[derive(PartialEq)]
+#[derive(Clone, PartialEq)]
 pub enum Game {
     Running {
         players: Vec<Player>,
@@ -17,19 +18,15 @@ pub enum Game {
 }
 
 impl Game {
-    fn new(number_of_players: i32, deck: Vec<Card>) -> Self {
-        if number_of_players >= 2 && number_of_players <= 10 {
-            Game::Running {
-                players: Self::initialize_players(
-                    number_of_players,
-                    Self::get_player_names(number_of_players),
-                ),
-                deck,
-                discard_pile: vec![],
-                suit_in_play: Suit::Clubs,
-            }
-        } else {
-            panic!("Invalid number of players");
+    pub fn new(number_of_players: i32, deck: Vec<Card>) -> Self {
+        Game::Running {
+            players: Self::initialize_players(
+                number_of_players,
+                Self::get_player_names(number_of_players),
+            ),
+            deck,
+            discard_pile: vec![],
+            suit_in_play: Suit::Clubs,
         }
     }
 
@@ -103,6 +100,10 @@ impl Game {
         Err(Box::new(GameError::GameOver))
     }
 
+    pub fn end_game(&mut self) {
+        *self = Game::Over;
+    }
+
     pub fn play(&mut self) {
         if let Game::Running {
             players,
@@ -111,16 +112,17 @@ impl Game {
             suit_in_play,
         } = self
         {
-            for player in players {
-                while !player.hand.is_empty() {
+            'game: loop {
+                for player in &mut *players {
+                    println!("\nPlayer {}'s turn", player.name.trim());
                     Player::take_turn(&mut player.hand, deck, discard_pile, suit_in_play);
+                    if player.hand.is_empty() {
+                        println!("\nPlayer {} wins! ", player.name.trim());
+                        break 'game;
+                    }
                 }
             }
         }
         self.end_game();
-    }
-
-    pub fn end_game(&mut self) {
-        *self = Game::Over;
     }
 }
