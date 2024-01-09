@@ -68,7 +68,7 @@ impl TryFrom<&str> for Value {
 
     fn try_from(string: &str) -> Result<Self, Self::Error> {
         match string.to_lowercase().as_str() {
-            "one" => Ok(Value::Ace),
+            "ace" => Ok(Value::Ace),
             "two" => Ok(Value::Two),
             "three" => Ok(Value::Three),
             "four" => Ok(Value::Four),
@@ -152,16 +152,22 @@ pub fn new_deck() -> Vec<Card> {
 
 pub fn shuffle_discard_pile(deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>) {
     if deck.is_empty() {
+        println!("before shuffling discard pile: ");
+        print_deck(&discard_pile);
         if let Some(top_card) = discard_pile.pop() {
             deck.append(discard_pile);
             deck.shuffle(&mut rand::thread_rng());
             discard_pile.push(top_card);
+            println!("discard pile: ");
+            print_deck(discard_pile);
+            println!("deck: ");
+            print_deck(&deck);
         }
     }
 }
 
 pub fn print_deck(deck: &Vec<Card>) {
-    for card in deck.iter() {
+    for card in deck {
         Card::print(card);
     }
 }
