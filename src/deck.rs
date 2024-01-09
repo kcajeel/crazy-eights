@@ -152,16 +152,10 @@ pub fn new_deck() -> Vec<Card> {
 
 pub fn shuffle_discard_pile(deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>) {
     if deck.is_empty() {
-        println!("before shuffling discard pile: ");
-        print_deck(&discard_pile);
         if let Some(top_card) = discard_pile.pop() {
             deck.append(discard_pile);
             deck.shuffle(&mut rand::thread_rng());
             discard_pile.push(top_card);
-            println!("discard pile: ");
-            print_deck(discard_pile);
-            println!("deck: ");
-            print_deck(&deck);
         }
     }
 }
