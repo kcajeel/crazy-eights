@@ -61,8 +61,9 @@ This program will simulate the Crazy Eights card game with all of the gameplay e
 
 ## Program Design
 
-The program will be separated into various modules to divide the game into discrete parts. This should make development and maintenance  easier, and the code will be separated into distinct files. The first modules to be defined are the card deck, the player structure, and the game itself. The main function will be used to launch the game and associated components.
-Functions shall be designed to do one thing such that complex tasks are broken down into processes. Functions will aim to be relatively short (< 50 lines) to assist in this goal.
+
+The program will be separated into various modules to divide the game into discrete parts. This should make development and maintenance easier, and the code will be more organized this way. The first modules to be defined are the card deck, the player structure, the game itself, and finally a module for defining error types. The main function will be used to launch the game and associated components.
+Functions shall be designed to do one thing such that complex tasks are broken down into procedures. Functions will aim to be relatively short (< 20 lines) to assist in this goal. Some things such as user input and display code will inherently take more lines than algorithmic code, so this rule may have some exceptions in the actual implementation.
 Named things shall be named according to their purpose, and units shall be appended to variable names where applicable. The goal of this is to create clear, readable code.
 The program is designed to be self-documenting, i.e. readable. This documentation exists to assist the developers in defining the program's design and to communicate the intended design to readers and potential contributors.
 
@@ -71,7 +72,8 @@ The program is designed to be self-documenting, i.e. readable. This documentatio
 This section details each function, struct, and method contained within each module. It emphasizes implementation details such as the inner workings of functions and how modules and functions will relate to one another. 
 
 #### main.rs
-- `fn main(number_of_players: i32)` will call `game::Game::new(number_of_players)` to create a Game struct with the appropriate number of players. It will then call `game::run_game()` with the struct it created. 
+- `fn promp_user_for_number_of_players() -> i32`: prompts the user for a number of players and returns the number
+- `fn main()`: calls `pompt_user_for_number_of_players` to get the number of players. Then, creates a deck with `deck::new_deck()` and shuffles it. `Game::new()` is called to create a Game struct with the appropriate number of players and `Game::initialize()` is called to create the game's initial state, with errors being caught. Then `Game::play()` is called to start the game. 
 
 #### deck.rs
 - `pub enum Value`: will contain the variants for each value Name in the [Setup table](#setup)
@@ -79,14 +81,15 @@ This section details each function, struct, and method contained within each mod
 - `pub struct Card` will contain the following fields:
   - `pub value: Value`: contains the value of the card
   - `pub suit: Suit`: contains the suit of the card
-    
+
   Implementations for Card: 
-    - `pub fn is_similar(some_card: &Card, other_card: &Card) -> bool`: returns `true` if the two cards are "similar", that is if either the suits or values match. This is used to determine if a card is playable.
-Functions of `deck`:
-    - `pub fn new() -> Vec<Card>`: returns a Vec containing 52 Cards representing a standard card deck, henceforth referred to as a deck
-    - `pub fn shuffle(deck: &mut Vec<Card>)`: shuffles the deck in-place by cutting it in half and inserting the cards back into the deck randomly multiple times
-    - `pub fn shuffle_discard_pile(deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>)`: if the deck is empty, takes the top card of the discard pile and stores it to a local variable `top_card`. Then, the discard pile is appended to the deck, the deck is shuffled, and the `top_card` is added back into the discard pile.
-    - `pub fn print(deck: &Vec<Card>)`: prints the contents of the deck
+    - `pub fn is_similar(some: &Card, other: &Card) -> bool`: returns true if either the Suit or Value fields of `some` match `other`.
+    - `pub fn print(&self)`: prints the value and suit of the card
+
+  Deck functions:
+  - `pub fn new() -> Vec<Self>`: returns a Vec containing 52 Cards representing a standard card deck, henceforth referred to as a deck
+  - `pub fn shuffle_discard_pile(deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>)`: adds all of the cards except for the top card from the discard pile to the deck, then shuffles the deck.
+  - `pub fn print_deck(&Vec<Card>)`: calls `Card::print` on the contents of the deck
 
 #### player.rs
 - `pub struct Player` will contain the following fields:
@@ -96,15 +99,15 @@ Functions of `deck`:
   Implementations for Player:
     - `pub fn new(name: String, hand: Option<Vec<Card>>) -> Self`: Given a name and optionally a hand, returns a new Player.
     - `fn draw_card(hand: &mut Vec<Card>, deck: &mut Vec<Card>)`: Given a list of cards (the deck), the player pops the top of the deck and adds it to their hand.
-    - `fn get_playable_cards(hand: &Vec<Card>, top_card: Card) -> Vec<Card>`: given a player's hand and the top card of the discard pile, returns a list of all the cards in the player's hand that can be played using `Card::is_similar`.
+    - `fn get_playable_cards(hand: &Vec<Card>, top_card: Card, suit_in_play: &mut Suit) -> Vec<Card>`: given a player's hand and the top card of the discard pile, returns a list of all the cards in the player's hand that can be played using `Card::is_similar`. If the top card's suit differs from the suit in play, i.e. a crazy eight has changed the suit, a list of cards matching the suit in play is returned.
     - `fn prompt_user_for_card(cards: Vec<Card>) -> Card`: prompts the user to choose a card to play from a list of possible cards and returns the chosen card.
     - `fn prompt_user_for_suit() -> Suit`: prompts the user to choose a suit to change the discard pile to and returns the chosen suit.
     - `fn change_suit_in_play(mut old_suit: &Suit, new_suit: &Suit)`: assigns the value of `new_suit` to `old_suit`.
-    - `fn play_card(hand: &mut Vec<Card>, discard_pile: &mut Vec<Card>, card: Card, suit_in_play: &mut Suit)`: Given a list of cards (the discard pile) and a Card to be played, the card is added to the top of the discard pile and removed from the hand. If the card's value is an Eight, then `prompt_user_for_suit` is called and the suit is changed with `change_suit_in_play`.
-    - `fn take_turn(hand: &mut Vec<Card>, deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>, suit_in_play: &mut Suit)`: Given the deck and discard pile as parameters, calls `get_playable_cards` to determine if the user can play any cards from their deck. If the list is empty, `draw_card` is called until the list of playable cards is ntot empty. Once a card can be played, `prompt_user_for_card` is called with a list of the possible cards. Once the user chooses a card, `play_card` is called.
+    - `fn play_card(hand: &mut Vec<Card>, discard_pile: &mut Vec<Card>, card: Card, suit_in_play: &mut Suit)`: Given the discard pile and a Card to be played, the card is added to the top of the discard pile and removed from the hand. The current suit in play is changed with `change_suit_in_play`. If the card's value is an Eight, then `prompt_user_for_suit` is called and the suit in play is changed appropriately.
+    - `fn take_turn(hand: &mut Vec<Card>, deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>, suit_in_play: &mut Suit)`: Given the deck and discard pile as parameters, calls `get_playable_cards` to determine if the user can play any cards from their deck. If the list is empty, `draw_card` is called until the list of playable cards is not empty. Once a card can be played, `prompt_user_for_card` is called with a list of the possible cards. Once the user chooses a card, `play_card` is called.
 
 #### game.rs
-- `enum Game` will contain the following variants:
+- `pub enum Game` will contain the following variants:
   - `Running`: contains the following fields: 
     - `players: Vec<Player>`: contains a list of each player and their hand
     - `deck: Vec<Card>`:  holds the cards in the play deck, to be dealt to each player and added to the discard pile.
@@ -113,20 +116,28 @@ Functions of `deck`:
   - `Over`: TODO: either contains no fields or contains the field of the winning player
 
    Implementations for Game: 
-    - `fn new(number_of_players: i32, deck: Vec<Card>, pile: Vec,Card>) -> mut Self`: creates a new Game with the `players` field initialized to the `number_of_players` parameter
+    - `fn new(number_of_players: i32, deck: Vec<Card>, pile: Vec,Card>) -> mut Self`: creates a new Game with the `players` field initialized to the `number_of_players` parameter. If the number of players is less than two or greater than ten, it panics.
     - `fn get_player_names(number_of_players: i32) -> Vec<String>`: given the number of players in the game, prompts the user for a name for each player and returns the list of names.
     - `fn initialize_players(number_of_players: i32, names: Vec<String>) -> Vec<Player>`: given the number of players and list of names, initializes the appropriate number of Players to the list of names with empty `hand` fields and returns a list of the players.
     - `fn deal_cards(players: &mut Vec<Player>, deck: &mut Vec<Card>)`: given the size of the `players` Vec, pops an appropriate amount of cards (see [Setup](#setup)) from the `deck` into each player's hand in alternating order. 
-    - `fn initialize(&mut self)`: Calls `deal_cards` with the fields of `self` and removes the top card of the `play_deck` and adds it to the `discard_pile`. `update_suit_in_play` is then called with the suit of the card in the discard pile to create the game's initial state. 
-    - `fn play(&mut self)`: iterates through the `players` and calls `player::take_turn` on each player, passing the play deck and discard pile as parameters. 
+    - `fn initialize_discard_pile(deck: &mut Vec<Card>, discard_pile: &mut Vec<Card>) -> Result<Card, DeckError>`: adds the top card of the deck to the discard pile. Returns a `DeckEmpty` error if `deck.pop()` returns None, and returns the top card otherwise.
+    - `fn initialize(&mut self) -> Result<&mut Self, Box<dyn Error>>`: If the `self` reference is an instance of `Game::Running`, calls `deal_cards` with the fields of `self` and calls `initialize_discard_pile`, proaogating any errors to the caller. `update_suit_in_play` is then called with the suit of the card in the discard pile to create the game's initial state. If the `self` reference is an instance of `Game::Over`, a `GameOver` error is returned.
+    - `fn end_game(&mut self)`: sets `self` to an instance of `Game::Over`.
+    - `fn play(&mut self)`: iterates through the `players` and calls `player::take_turn` on each player, passing the play deck and discard pile as parameters until the game ends, where `end_game` is called.
 
+#### error.rs
+- `pub enum DeckError` contains the following variants: 
+  - `InvalidValue`: returned by `Value.try_from()`
+  - `InvalidSuit`: returned by `Suit.try_from()`
+  - `DeckEmpty`: returned in `Game::initialize_discard_pile()` if the deck is empty.
+- `pub enum GameError` contains the following variants:
+  - `GameOver`: returned by `Game::initialize()` when the game is over and nothing can be initialized.
 ---
 
 ## Future Plans
 
-- A gui may be added once the game functions (defined above) are written
+- A tui will be added once the game functions (defined above) are written
 - Once that is done, networking may be added to enable multiplayer features
-- After that, this game will be re-written in C++ and then Java. It will be good experience to learn the differences between the languages, and it would be interesting to benchmark the performance of each program.
 ---
 
 ## References
