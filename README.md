@@ -9,4 +9,4 @@ Documentation link [here](./docs/Design_Document.md "Design Document")
 
 ## Future Plans
 
-Because I thought of implementing the game in Java, and because I want more experience with C++, I may translate the game to those languages as well for a fun exercise. If it proves too easy, I might program different card games in those languages afterwards.
+I will be testing the game's functions against the requirements of the game and then I will write a TUI for the game.
