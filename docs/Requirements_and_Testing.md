@@ -3,7 +3,9 @@
 ## About
 
 This document will detail the program requirements to be used for testing and validation. The format for requiements shall be as follows: 
+
 R[requirement number]: The [agent] shall [requirement]. 
+
 Where the requirement number is an integer used to identify requirements in a concise way, the agent is one of the acceptable agents defined below, and the requirement is some behavior of the agent to be specified. Requirements shall be atomic, such that they only require one thing.
 
 ## Acceptable Agents
@@ -19,6 +21,8 @@ The following lists and defines the acceptable agents to be used in the agent fi
 
 ## Requirements: 
 R0: The Program shall accept no more than ten (10) Players.
+
 R1: The Program shall accept no fewer than two (2) Players.
+
 R2: The Program shall shuffle two (2) Card Decks together when there are more than five (5) Players.
 
