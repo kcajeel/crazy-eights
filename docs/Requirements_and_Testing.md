@@ -2,7 +2,7 @@
 
 ## About
 
-This document will detail the program requirements to be used for testing and validation. The format for requiements shall be as follows: 
+This document will detail the program requirements to be used for testing and validation. The format for requirements shall be as follows: 
 
 R[requirement number]: The [agent] shall [requirement]. 
 
