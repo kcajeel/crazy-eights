@@ -126,3 +126,19 @@ impl Game {
         self.end_game();
     }
 }
+
+#[cfg(test)]
+mod test {
+
+    #[test]
+    fn test_num_cards_two_players() {}
+    #[test]
+    fn test_num_cards_gt_two_players() {}
+    #[test]
+    fn test_discard_pile_empty() {}
+
+    #[test]
+    fn test_play_deck_state() {}
+
+    
+}

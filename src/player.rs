@@ -142,7 +142,7 @@ impl Player {
                 suit_in_play
             );
         } else {
-            print!("Card to match: ");
+            print!("Card to match: \n");
             top_card.print();
         }
         while playable_cards.is_empty() {

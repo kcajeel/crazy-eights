@@ -9,4 +9,4 @@ Documentation link [here](./docs/Design_Document.md "Design Document")
 
 ## Future Plans
 
-Because I thought of implementing the game in Java, and because I want more experience with C++, I may translate the game to those languages as well for a fun exercise. If it proves too easy, I might program different card games in those languages afterwards.
+I will be testing the game's functions against the requirements and then I will write networking code to enable multiplayer functionality. I plan to introduce some documentation to detail what information will be sent over the network. If too many changes would be needed to make the game networked (i.e. client-server separation to prevent cheating, etc) then I will make a separate repository and try to finish the UI of this implementation first. That way, most of the game logic and UI will be complete before I try to deal with networking and anticheat logic. 
