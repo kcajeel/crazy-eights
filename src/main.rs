@@ -21,7 +21,7 @@ fn prompt_user_for_number_of_players() -> i32 {
             }
         }
         Err(e) => {
-            println!("{}", e);
+            eprintln!("{}", e);
             return prompt_user_for_number_of_players();
         }
     }
@@ -33,10 +33,10 @@ fn main() {
     if number_of_players > 5 {
         deck.append(&mut deck::new_deck());
     }
-    
+
     deck.shuffle(&mut rand::thread_rng());
 
     let mut game = Game::new(number_of_players, deck);
-    game = game.initialize().unwrap().clone();
+    game.initialize().unwrap();
     game.play();
 }
