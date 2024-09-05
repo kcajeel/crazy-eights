@@ -6,6 +6,10 @@ Contents:
 
 [Gameplay](#gameplay)
 
+[Scope](#project-scope)
+
+[Networking](#networking)
+
 [Program Design](#program-design)
 
 [Low Level Design](#low-level-design)
@@ -56,6 +60,18 @@ The game is played until a player discards all of the cards in their hand and be
 ## Project Scope
 
 This program will simulate the Crazy Eights card game with all of the gameplay elements described above. The game's functions will be implemented, and the game will be fully playable with 2-10 players[^1]. It is not currently within the scope of the project to include networking for multiple human players, but it may be added in the future. There will be automated players for cases where there are not enough human players for a game. The game will be accessible either through a CLI or GUI[^2], which will be decided once the core game functionality is completed. Because this program is written in Rust, it should be runnable on [every platform Rust supports][1]. 
+
+---
+
+## Networking
+
+To enable multiplayer play across computers, the program should include some networking functionality. There are multiple ways this could be done. Below, I will explore a couple of approaches to game networking I've considered: 
+
+**Peer-To-Peer (P2P)**: The program is capable of running a lightweight server along with a client. Each player's computer stores data about their game's state. This allows players to connect to each other's computers to play together. This approach requires no infrastructure since each player's computer is also a server, but it could make the program more intensive to run and it opens a possibility for cheating as players could modify the code to lie about their game state data. 
+
+**Client-Server**: The program can be run in client mode or server mode. Client mode is run by players looking to play the game by connecting to a computer running in server mode. A number of clients can connect to a given server, which facilitates play between players and stores game state data. This approach would require some server infrastructure, or at least one of the players would have to run the server on their computer. It would be easier to prevent cheating because the server is a central point of trust, but securing the server would open a new set of challenges. 
+
+**Hybrid**: P2P mode is enabled for LAN parties/local games and Client-Server mode is enabled for public games. This would allow players more flexibility through playing with their friends at home or on public servers with strangers in potentially different countries, like Minecraft and many other popular games. This approach would require me to implement both P2P and Client-Server functionality, but it would be the most flexible option. 
 
 ---
 
