@@ -73,6 +73,8 @@ To enable multiplayer play across computers, the program should include some net
 
 **Hybrid**: P2P mode is enabled for LAN parties/local games and Client-Server mode is enabled for public games. This would allow players more flexibility through playing with their friends at home or on public servers with strangers in potentially different countries, like Minecraft and many other popular games. This approach would require me to implement both P2P and Client-Server functionality, but it would be the most flexible option. 
 
+I've decided that I would like the game to run P2P across networks. I don't want to invest in any infrastructure for this project, but I still want to play with friends who might be in different locations. I also think the idea of P2P stuff is very cool in how it's decentralized and anyone can download the game and play with anyone. It'll be more difficult to prevent cheating, but I'll figure it out. To actually implement it, I can reason about how to make a program P2P across one network for LAN parties, but I need to do some more research to make it work across the internet. 
+
 ---
 
 ## Program Design
